@@ -1,0 +1,206 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  background-image: url('https://images.unsplash.com/photo-1605905898247-bb1fe36b587e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fGFydHdvcmtzJTIwaW4lMjBhJTIwbXVzZXVtJTIwM2R8ZW58MHx8MHx8fDA%3D');
+  background-size: cover;
+  background-position: center;
+  color: #f0f0f0;
+}
+
+/* FIX NAVIGATION OVERFLOW */
+.navbar {
+  display: flex;
+  justify-content: center;     /* center items */
+  align-items: center;
+  gap: 20px;                    /* spacing between links */
+  padding: 15px;
+  background: rgba(0, 0, 50, 0.6);
+  flex-wrap: wrap;             /* prevents overflowing off screen */
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #f0f0f0;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* FIX: Center everything on the page */
+.container {
+  width: 100%;
+  max-width: 500px;              /* smaller width for centered form */
+  margin: 40px auto 0 auto;      /* AUTO centers it */
+  padding: 20px;
+}
+
+/* FORM stays centered and readable */
+form {
+  background-color: rgba(0, 0, 50, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;             /* center text inside */
+}
+
+/* Inputs */
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+}
+
+button {
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* Cards below form */
+.cards {
+  margin-top: 10px;
+}
+
+.card {
+  background-color: rgba(0, 0, 80, 0.7);
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+}
+
+/* NEW STYLES FOR EDIT/DELETE FUNCTIONALITY */
+
+/* Button group for edit/delete */
+.button-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.button-group button:first-child {
+  background-color: #4CAF50; /* Green for Edit */
+  color: white;
+}
+
+.button-group button:first-child:hover {
+  background-color: #45a049;
+}
+
+.button-group button:last-child {
+  background-color: #ff4444; /* Red for Delete */
+  color: white;
+}
+
+.button-group button:last-child:hover {
+  background-color: #cc0000;
+}
+
+/* Edit form inside card */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-form input,
+.edit-form select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.edit-form .button-group {
+  margin-top: 8px;
+}
+
+/* Save and Cancel buttons in edit mode */
+.edit-form .button-group button:first-child {
+  background-color: #2196F3; /* Blue for Save */
+}
+
+.edit-form .button-group button:first-child:hover {
+  background-color: #0b7dda;
+}
+
+.edit-form .button-group button:last-child {
+  background-color: #757575; /* Gray for Cancel */
+}
+
+.edit-form .button-group button:last-child:hover {
+  background-color: #5d5d5d;
+}
+
+/* Error message styling */
+.error-message {
+  background-color: rgba(255, 0, 0, 0.2);
+  border: 1px solid #ff4444;
+  color: #ffcccc;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Success message styling */
+.success-message {
+  background-color: rgba(0, 255, 0, 0.2);
+  border: 1px solid #4CAF50;
+  color: #ccffcc;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Card content spacing */
+.card p {
+  margin: 5px 0;
+}
+
+.card strong {
+  font-size: 18px;
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+    max-width: 95%;
+    padding: 10px;
+  }
+  
+  .navbar {
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .navbar a {
+    font-size: 16px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+}
