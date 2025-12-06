@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function ExhibitionForm() {
-  const [theme, setTheme] = useState(""); // Changed from name
+  const [theme, setTheme] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [artworkId, setArtworkId] = useState("");
@@ -12,31 +12,33 @@ export default function ExhibitionForm() {
   const [editLocation, setEditLocation] = useState("");
   const [editDate, setEditDate] = useState("");
   const [editArtworkId, setEditArtworkId] = useState("");
+  const [artworks, setArtworks] = useState([]);
 
   const fetchExhibitions = async () => {
     try {
-      console.log("Fetching exhibitions...");
       const response = await fetch("http://localhost:8000/exhibitions/");
-      console.log("Response:", response);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error("Failed to fetch exhibitions");
       const data = await response.json();
-      console.log("Data received:", data);
       setExhibitions(data);
-      setError("");
     } catch (err) {
-      console.error("Fetch error details:", err);
-      setError(
-        `Failed to fetch exhibitions: ${err.message}. Make sure backend is running on port 8000.`
-      );
+      setError("Failed to fetch exhibitions");
+    }
+  };
+
+  const fetchArtworks = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/artworks/");
+      if (!response.ok) throw new Error("Failed to fetch artworks");
+      const data = await response.json();
+      setArtworks(data);
+    } catch (err) {
+      console.error("Fetch artworks error:", err);
     }
   };
 
   useEffect(() => {
     fetchExhibitions();
+    fetchArtworks();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -47,18 +49,15 @@ export default function ExhibitionForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           location,
-          theme, // Changed from name
+          theme,
           date,
           artwork_id: artworkId ? parseInt(artworkId) : null,
         }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.detail ||
-            `Failed to create exhibition. Status: ${response.status}`
-        );
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to create exhibition");
       }
 
       const newExhibition = await response.json();
@@ -133,109 +132,175 @@ export default function ExhibitionForm() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <h2>Exhibition Form</h2>
-        {error && (
-          <div
-            style={{
-              color: "red",
-              background: "#ffebee",
-              padding: "10px",
-              borderRadius: "5px",
-            }}
-          >
-            {error}
-          </div>
-        )}
-        <input
-          placeholder="Theme"
-          value={theme}
-          onChange={(e) => setTheme(e.target.value)}
-          required
-        />
-        <input
-          placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          required
-        />
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-        />
-        <input
-          placeholder="Artwork ID (optional)"
-          type="number"
-          value={artworkId}
-          onChange={(e) => setArtworkId(e.target.value)}
-        />
-        <button type="submit">Add Exhibition</button>
-      </form>
+    <div className="page-container">
+      <div className="form-container">
+        <form onSubmit={handleSubmit} className="exhibition-form">
+          <h2>🏛️ Add New Exhibition</h2>
+          {error && <div className="error-message">{error}</div>}
 
-      <div className="cards">
+          <div className="form-group">
+            <label htmlFor="theme">Theme</label>
+            <input
+              id="theme"
+              placeholder="Exhibition theme"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="location">Location</label>
+            <input
+              id="location"
+              placeholder="Exhibition location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="date">Date</label>
+            <input
+              id="date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="artworkId">Artwork (Optional)</label>
+            <select
+              id="artworkId"
+              value={artworkId}
+              onChange={(e) => setArtworkId(e.target.value)}
+            >
+              <option value="">Select Artwork</option>
+              {artworks.map((artwork) => (
+                <option key={artwork.id} value={artwork.id}>
+                  {artwork.title} (ID: {artwork.id})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button type="submit" className="submit-button">
+            🏛️ Add Exhibition
+          </button>
+        </form>
+      </div>
+
+      <div className="cards-container">
+        <h3>Exhibitions ({exhibitions.length})</h3>
+
         {exhibitions.length === 0 ? (
-          <p>No exhibitions found. Add one above!</p>
+          <div className="empty-state">
+            <p>No exhibitions found. Add one above!</p>
+          </div>
         ) : (
-          exhibitions.map((ex) => (
-            <div key={ex.id} className="card">
-              {editingId === ex.id ? (
-                <div className="edit-form">
-                  <input
-                    value={editTheme}
-                    onChange={(e) => setEditTheme(e.target.value)}
-                    placeholder="Theme"
-                    required
-                  />
-                  <input
-                    value={editLocation}
-                    onChange={(e) => setEditLocation(e.target.value)}
-                    placeholder="Location"
-                    required
-                  />
-                  <input
-                    type="date"
-                    value={editDate}
-                    onChange={(e) => setEditDate(e.target.value)}
-                    required
-                  />
-                  <input
-                    placeholder="Artwork ID (optional)"
-                    type="number"
-                    value={editArtworkId}
-                    onChange={(e) => setEditArtworkId(e.target.value)}
-                  />
-                  <div className="button-group">
-                    <button onClick={() => handleUpdate(ex.id)}>Save</button>
-                    <button onClick={cancelEdit}>Cancel</button>
+          <div className="exhibition-cards">
+            {exhibitions.map((ex) => (
+              <div key={ex.id} className="exhibition-card">
+                {editingId === ex.id ? (
+                  <div className="edit-mode">
+                    <div className="edit-header">
+                      <h4>Edit Exhibition</h4>
+                    </div>
+                    <div className="edit-form">
+                      <input
+                        value={editTheme}
+                        onChange={(e) => setEditTheme(e.target.value)}
+                        placeholder="Theme"
+                        required
+                      />
+                      <input
+                        value={editLocation}
+                        onChange={(e) => setEditLocation(e.target.value)}
+                        placeholder="Location"
+                        required
+                      />
+                      <input
+                        type="date"
+                        value={editDate}
+                        onChange={(e) => setEditDate(e.target.value)}
+                        required
+                      />
+                      <select
+                        value={editArtworkId}
+                        onChange={(e) => setEditArtworkId(e.target.value)}
+                      >
+                        <option value="">Select Artwork</option>
+                        {artworks.map((artwork) => (
+                          <option key={artwork.id} value={artwork.id}>
+                            {artwork.title} (ID: {artwork.id})
+                          </option>
+                        ))}
+                      </select>
+                      <div className="edit-actions">
+                        <button
+                          onClick={() => handleUpdate(ex.id)}
+                          className="save-button"
+                        >
+                          💾 Save
+                        </button>
+                        <button onClick={cancelEdit} className="cancel-button">
+                          ❌ Cancel
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <>
-                  <p>
-                    <strong>Theme: {ex.theme || "N/A"}</strong>
-                  </p>
-                  <p>Location: {ex.location || "N/A"}</p>
-                  <p>
-                    Date:{" "}
-                    {ex.date ? new Date(ex.date).toLocaleDateString() : "N/A"}
-                  </p>
-                  {ex.artwork_id && <p>Artwork ID: {ex.artwork_id}</p>}
-                  <div className="button-group">
-                    <button onClick={() => handleEdit(ex)}>Edit</button>
-                    <button
-                      onClick={() => handleDelete(ex.id)}
-                      style={{ backgroundColor: "#ff4444", color: "white" }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))
+                ) : (
+                  <>
+                    <div className="exhibition-content">
+                      <div className="exhibition-name">
+                        <h4>{ex.theme || "N/A"}</h4>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">Location:</span>
+                        <span className="detail-value">
+                          {ex.location || "N/A"}
+                        </span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">Date:</span>
+                        <span className="detail-value">
+                          {ex.date
+                            ? new Date(ex.date).toLocaleDateString()
+                            : "N/A"}
+                        </span>
+                      </div>
+                      {ex.artwork_id && (
+                        <div className="detail-item">
+                          <span className="detail-label">Artwork ID:</span>
+                          <span className="detail-value">{ex.artwork_id}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="exhibition-actions">
+                      <button
+                        onClick={() => handleEdit(ex)}
+                        className="action-button edit-button"
+                        title="Edit Exhibition"
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(ex.id)}
+                        className="action-button delete-button"
+                        title="Delete Exhibition"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

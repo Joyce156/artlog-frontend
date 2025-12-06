@@ -4,6 +4,8 @@ export default function ArtworkForm() {
   const [title, setTitle] = useState("");
   const [artistId, setArtistId] = useState("");
   const [year, setYear] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [description, setDescription] = useState("");
   const [artworks, setArtworks] = useState([]);
   const [artists, setArtists] = useState([]);
   const [error, setError] = useState("");
@@ -11,6 +13,8 @@ export default function ArtworkForm() {
   const [editTitle, setEditTitle] = useState("");
   const [editArtistId, setEditArtistId] = useState("");
   const [editYear, setEditYear] = useState("");
+  const [editImageUrl, setEditImageUrl] = useState("");
+  const [editDescription, setEditDescription] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:8000/artists/")
@@ -34,6 +38,8 @@ export default function ArtworkForm() {
           title,
           artist_id: parseInt(artistId),
           year: parseInt(year),
+          image_url: imageUrl || null,
+          description: description || null,
         }),
       });
       if (!response.ok) throw new Error("Failed to create artwork");
@@ -42,6 +48,8 @@ export default function ArtworkForm() {
       setTitle("");
       setArtistId("");
       setYear("");
+      setImageUrl("");
+      setDescription("");
     } catch (err) {
       setError(err.message);
     }
@@ -52,6 +60,8 @@ export default function ArtworkForm() {
     setEditTitle(artwork.title);
     setEditArtistId(artwork.artist_id.toString());
     setEditYear(artwork.year.toString());
+    setEditImageUrl(artwork.image_url || "");
+    setEditDescription(artwork.description || "");
   };
 
   const handleUpdate = async (id) => {
@@ -63,6 +73,8 @@ export default function ArtworkForm() {
           title: editTitle,
           artist_id: parseInt(editArtistId),
           year: parseInt(editYear),
+          image_url: editImageUrl || null,
+          description: editDescription || null,
         }),
       });
 
@@ -103,94 +115,213 @@ export default function ArtworkForm() {
     setEditTitle("");
     setEditArtistId("");
     setEditYear("");
+    setEditImageUrl("");
+    setEditDescription("");
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <h2>Artwork Form</h2>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <input
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <select
-          value={artistId}
-          onChange={(e) => setArtistId(e.target.value)}
-          required
-        >
-          <option value="">Select Artist</option>
-          {artists.map((artist) => (
-            <option key={artist.id} value={artist.id}>
-              {artist.name}
-            </option>
-          ))}
-        </select>
-        <input
-          type="number"
-          placeholder="Year"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-          required
-        />
-        <button type="submit">Add Artwork</button>
-      </form>
-
-      <div className="cards">
-        {artworks.map((art) => (
-          <div key={art.id} className="card">
-            {editingId === art.id ? (
-              <div className="edit-form">
-                <input
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  required
-                />
-                <select
-                  value={editArtistId}
-                  onChange={(e) => setEditArtistId(e.target.value)}
-                  required
-                >
-                  <option value="">Select Artist</option>
-                  {artists.map((artist) => (
-                    <option key={artist.id} value={artist.id}>
-                      {artist.name}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="number"
-                  value={editYear}
-                  onChange={(e) => setEditYear(e.target.value)}
-                  required
-                />
-                <div className="button-group">
-                  <button onClick={() => handleUpdate(art.id)}>Save</button>
-                  <button onClick={cancelEdit}>Cancel</button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <p>
-                  <strong>{art.title}</strong>
-                </p>
-                <p>Artist ID: {art.artist_id}</p>
-                <p>Year: {art.year}</p>
-                <div className="button-group">
-                  <button onClick={() => handleEdit(art)}>Edit</button>
-                  <button
-                    onClick={() => handleDelete(art.id)}
-                    style={{ backgroundColor: "#ff4444", color: "white" }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </>
-            )}
+    <div className="page-container">
+      <div className="form-container">
+        <form onSubmit={handleSubmit} className="artwork-form">
+          <h2>🖼️ Add New Artwork</h2>
+          {error && <p className="error-message">{error}</p>}
+          <div className="form-group">
+            <label htmlFor="title">Title</label>
+            <input
+              id="title"
+              placeholder="Artwork title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
           </div>
-        ))}
+
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
+              placeholder="Artwork description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows="3"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="artistId">Artist</label>
+            <select
+              id="artistId"
+              value={artistId}
+              onChange={(e) => setArtistId(e.target.value)}
+              required
+            >
+              <option value="">Select Artist</option>
+              {artists.map((artist) => (
+                <option key={artist.id} value={artist.id}>
+                  {artist.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="year">Year</label>
+            <input
+              id="year"
+              type="number"
+              placeholder="Creation year"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="imageUrl">Image URL (optional)</label>
+            <input
+              id="imageUrl"
+              placeholder="Image URL"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+            />
+          </div>
+
+          <button type="submit" className="submit-button">
+            🖼️ Add Artwork
+          </button>
+        </form>
+      </div>
+
+      <div className="cards-container">
+        <h3>Artworks ({artworks.length})</h3>
+
+        {artworks.length === 0 ? (
+          <div className="empty-state">
+            <p>No artworks yet. Add your first artwork above!</p>
+          </div>
+        ) : (
+          <div className="artwork-cards">
+            {artworks.map((art) => (
+              <div key={art.id} className="artwork-card">
+                {editingId === art.id ? (
+                  <div className="edit-mode">
+                    <div className="edit-header">
+                      <h4>Edit Artwork</h4>
+                    </div>
+                    <div className="edit-form">
+                      <input
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        placeholder="Title"
+                        required
+                      />
+                      <textarea
+                        value={editDescription}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                        placeholder="Description"
+                        rows="2"
+                      />
+                      <select
+                        value={editArtistId}
+                        onChange={(e) => setEditArtistId(e.target.value)}
+                        required
+                      >
+                        <option value="">Select Artist</option>
+                        {artists.map((artist) => (
+                          <option key={artist.id} value={artist.id}>
+                            {artist.name}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="number"
+                        value={editYear}
+                        onChange={(e) => setEditYear(e.target.value)}
+                        placeholder="Year"
+                        required
+                      />
+                      <input
+                        placeholder="Image URL"
+                        value={editImageUrl}
+                        onChange={(e) => setEditImageUrl(e.target.value)}
+                      />
+                      <div className="edit-actions">
+                        <button
+                          onClick={() => handleUpdate(art.id)}
+                          className="save-button"
+                        >
+                          💾 Save
+                        </button>
+                        <button onClick={cancelEdit} className="cancel-button">
+                          ❌ Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {art.image_url && (
+                      <div className="artwork-image">
+                        <img
+                          src={art.image_url}
+                          alt={art.title}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "block";
+                          }}
+                        />
+                        <div
+                          className="image-placeholder"
+                          style={{ display: "none" }}
+                        >
+                          No Image Available
+                        </div>
+                      </div>
+                    )}
+                    <div className="artwork-content">
+                      <div className="artwork-name">
+                        <h4>{art.title}</h4>
+                      </div>
+                      {art.description && (
+                        <div className="detail-item">
+                          <span className="detail-label">Description:</span>
+                          <span className="detail-value">
+                            {art.description}
+                          </span>
+                        </div>
+                      )}
+                      <div className="detail-item">
+                        <span className="detail-label">Artist ID:</span>
+                        <span className="detail-value">{art.artist_id}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">Year:</span>
+                        <span className="detail-value">{art.year}</span>
+                      </div>
+                    </div>
+
+                    <div className="artwork-actions">
+                      <button
+                        onClick={() => handleEdit(art)}
+                        className="action-button edit-button"
+                        title="Edit Artwork"
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(art.id)}
+                        className="action-button delete-button"
+                        title="Delete Artwork"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

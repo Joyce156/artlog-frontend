@@ -1,48 +1,69 @@
 import React, { useState } from "react";
-import Login from "../components/LoginForm";
-import Home from "../pages/Home";
+import LoginForm from "../components/LoginForm";
+import Logout from "../components/Logout";
+import HomePage from "../pages/Home";
 import ArtistForm from "../components/ArtistForm";
 import ArtworkForm from "../components/ArtworkForm";
 import ExhibitionForm from "../components/ExhibitionForm";
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [activePage, setActivePage] = useState("home"); // default to home
+  const [activePage, setActivePage] = useState("home");
+
+  const handleLoginSuccess = (username, profilePicture) => {
+    setUser({ username, profilePicture });
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setActivePage("home");
+  };
 
   if (!user) {
-    return (
-      <Login
-        onLoginSuccess={(username, profilePicture) =>
-          setUser({ username, profilePicture })
-        }
-      />
-    );
+    return <LoginForm onLoginSuccess={handleLoginSuccess} />;
   }
 
   return (
-    <div>
+    <div className="app-container">
       {/* Navigation */}
       <nav className="navbar">
-        <a href="#home" onClick={() => setActivePage("home")}>
-          Home
-        </a>
-        <a href="#artist" onClick={() => setActivePage("artist")}>
-          Artist
-        </a>
-        <a href="#artwork" onClick={() => setActivePage("artwork")}>
-          Artwork
-        </a>
-        <a href="#exhibition" onClick={() => setActivePage("exhibition")}>
-          Exhibition
-        </a>
-        <span style={{ marginLeft: "auto", color: "#f0f0f0" }}>
-          Logged in as: {user.username}
-        </span>
+        <div className="nav-links">
+          <a
+            href="#home"
+            onClick={() => setActivePage("home")}
+            className={activePage === "home" ? "active" : ""}
+          >
+            🏠 Home
+          </a>
+          <a
+            href="#artist"
+            onClick={() => setActivePage("artist")}
+            className={activePage === "artist" ? "active" : ""}
+          >
+            🎨 Artists
+          </a>
+          <a
+            href="#artwork"
+            onClick={() => setActivePage("artwork")}
+            className={activePage === "artwork" ? "active" : ""}
+          >
+            🖼️ Artworks
+          </a>
+          <a
+            href="#exhibition"
+            onClick={() => setActivePage("exhibition")}
+            className={activePage === "exhibition" ? "active" : ""}
+          >
+            🏛️ Exhibitions
+          </a>
+        </div>
+
+        <Logout user={user} onLogout={handleLogout} />
       </nav>
 
-      {/* Container for forms or home */}
-      <div className="container">
-        {activePage === "home" && <Home user={user} />}
+      {/* Main content */}
+      <div className="main-content">
+        {activePage === "home" && <HomePage user={user} />}
         {activePage === "artist" && <ArtistForm />}
         {activePage === "artwork" && <ArtworkForm />}
         {activePage === "exhibition" && <ExhibitionForm />}
