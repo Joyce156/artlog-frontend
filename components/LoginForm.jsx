@@ -79,7 +79,7 @@ export default function LoginForm({ onLoginSuccess }) {
                 onClick={togglePreview}
                 className="preview-toggle"
               >
-                {previewVisible ? "👁️ Hide Preview" : "👁️ Show Preview"}
+                {previewVisible ? " Hide Preview" : " Show Preview"}
               </button>
             </label>
             <input
