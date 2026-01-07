@@ -22,14 +22,17 @@ export default function LoginForm({ onLoginSuccess }) {
         "&background=random";
 
     try {
-      const response = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          profile_picture: finalProfilePicture,
-        }),
-      });
+      const response = await fetch(
+        "https://artlog-backend.onrender.com/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username,
+            profile_picture: finalProfilePicture,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

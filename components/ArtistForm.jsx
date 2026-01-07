@@ -13,7 +13,9 @@ export default function ArtistForm() {
 
   const fetchArtists = async () => {
     try {
-      const response = await fetch("http://localhost:8000/artists/");
+      const response = await fetch(
+        "https://artlog-backend.onrender.com/artists/"
+      );
       if (!response.ok) throw new Error("Failed to fetch artists");
       const data = await response.json();
       setArtists(data);
@@ -29,11 +31,14 @@ export default function ArtistForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8000/artists/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, country, art_style: artStyle }),
-      });
+      const response = await fetch(
+        "https://artlog-backend.onrender.com/artists/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, country, art_style: artStyle }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -60,15 +65,18 @@ export default function ArtistForm() {
 
   const handleUpdate = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8000/artists/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: editName,
-          country: editCountry,
-          art_style: editArtStyle,
-        }),
-      });
+      const response = await fetch(
+        `https://artlog-backend.onrender.com/artists/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: editName,
+            country: editCountry,
+            art_style: editArtStyle,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -92,9 +100,12 @@ export default function ArtistForm() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/artists/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `https://artlog-backend.onrender.com/artists/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to delete artist");
 

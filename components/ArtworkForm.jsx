@@ -17,12 +17,12 @@ export default function ArtworkForm() {
   const [editDescription, setEditDescription] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8000/artists/")
+    fetch("https://artlog-backend.onrender.com/artists/")
       .then((res) => res.json())
       .then(setArtists)
       .catch(() => setError("Failed to fetch artists"));
 
-    fetch("http://localhost:8000/artworks/")
+    fetch("https://artlog-backend.onrender.com/artworks/")
       .then((res) => res.json())
       .then(setArtworks)
       .catch(() => setError("Failed to fetch artworks"));
@@ -31,17 +31,20 @@ export default function ArtworkForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8000/artworks/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          artist_id: parseInt(artistId),
-          year: parseInt(year),
-          image_url: imageUrl || null,
-          description: description || null,
-        }),
-      });
+      const response = await fetch(
+        "https://artlog-backend.onrender.com/artworks/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title,
+            artist_id: parseInt(artistId),
+            year: parseInt(year),
+            image_url: imageUrl || null,
+            description: description || null,
+          }),
+        }
+      );
       if (!response.ok) throw new Error("Failed to create artwork");
       const newArtwork = await response.json();
       setArtworks([newArtwork, ...artworks]);
@@ -66,17 +69,20 @@ export default function ArtworkForm() {
 
   const handleUpdate = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8000/artworks/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: editTitle,
-          artist_id: parseInt(editArtistId),
-          year: parseInt(editYear),
-          image_url: editImageUrl || null,
-          description: editDescription || null,
-        }),
-      });
+      const response = await fetch(
+        `https://artlog-backend.onrender.com/artworks/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: editTitle,
+            artist_id: parseInt(editArtistId),
+            year: parseInt(editYear),
+            image_url: editImageUrl || null,
+            description: editDescription || null,
+          }),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to update artwork");
 
@@ -98,9 +104,12 @@ export default function ArtworkForm() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/artworks/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `https://artlog-backend.onrender.com/artworks/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to delete artwork");
 

@@ -16,7 +16,9 @@ export default function ExhibitionForm() {
 
   const fetchExhibitions = async () => {
     try {
-      const response = await fetch("http://localhost:8000/exhibitions/");
+      const response = await fetch(
+        "https://artlog-backend.onrender.com/exhibitions/"
+      );
       if (!response.ok) throw new Error("Failed to fetch exhibitions");
       const data = await response.json();
       setExhibitions(data);
@@ -27,7 +29,9 @@ export default function ExhibitionForm() {
 
   const fetchArtworks = async () => {
     try {
-      const response = await fetch("http://localhost:8000/artworks/");
+      const response = await fetch(
+        "https://artlog-backend.onrender.com/artworks/"
+      );
       if (!response.ok) throw new Error("Failed to fetch artworks");
       const data = await response.json();
       setArtworks(data);
@@ -44,16 +48,19 @@ export default function ExhibitionForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8000/exhibitions/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          location,
-          theme,
-          date,
-          artwork_id: artworkId ? parseInt(artworkId) : null,
-        }),
-      });
+      const response = await fetch(
+        "https://artlog-backend.onrender.com/exhibitions/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            location,
+            theme,
+            date,
+            artwork_id: artworkId ? parseInt(artworkId) : null,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -82,16 +89,19 @@ export default function ExhibitionForm() {
 
   const handleUpdate = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8000/exhibitions/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          location: editLocation,
-          theme: editTheme,
-          date: editDate,
-          artwork_id: editArtworkId ? parseInt(editArtworkId) : null,
-        }),
-      });
+      const response = await fetch(
+        `https://artlog-backend.onrender.com/exhibitions/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            location: editLocation,
+            theme: editTheme,
+            date: editDate,
+            artwork_id: editArtworkId ? parseInt(editArtworkId) : null,
+          }),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to update exhibition");
 
@@ -111,9 +121,12 @@ export default function ExhibitionForm() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/exhibitions/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `https://artlog-backend.onrender.com/exhibitions/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to delete exhibition");
 
